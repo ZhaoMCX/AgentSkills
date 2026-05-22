@@ -47,9 +47,9 @@ Install one skill:
 .\scripts\install.ps1 -Skill agent-framework
 ```
 
-## Mirrors
+## Topic Repositories
 
-The source of truth is this repository. Topic repositories are generated from groups of skills for easier discovery and sharing.
+The source of truth is this repository. Topic repositories are generated from groups of skills for easier discovery and sharing. Topic membership and repository targets are managed in `topics.json`.
 
 Generate a topic repository workspace:
 
@@ -58,6 +58,20 @@ Generate a topic repository workspace:
 .\scripts\export-topic.ps1 -Topic UnitySkills
 .\scripts\export-topic.ps1 -Topic UniAppSkills
 ```
+
+Publish one topic repository from this source repository:
+
+```powershell
+.\scripts\publish-topic.ps1 -Topic UnitySkills
+```
+
+Publish every topic repository:
+
+```powershell
+.\scripts\publish-all-topics.ps1
+```
+
+Generated topic workspaces live under `dist/topics/`. The directory is intentionally ignored because it is a local publish workspace, not source content. Re-run the publish scripts from a fresh clone of `AgentSkills` to recreate the workspace and push updates to the GitHub topic repositories.
 
 Single-skill mirrors can still be generated from `skills/<skill-name>` when a skill needs independent distribution.
 

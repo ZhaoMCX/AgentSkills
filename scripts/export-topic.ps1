@@ -1,6 +1,5 @@
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet("AgentFramework", "UnitySkills", "UniAppSkills")]
     [string]$Topic,
 
     [string]$OutputRoot = "dist\topics"
@@ -10,43 +9,22 @@ $ErrorActionPreference = "Stop"
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $skillsRoot = Join-Path $repoRoot "skills"
+$topicsFile = Join-Path $repoRoot "topics.json"
 
-$topics = @{
-    AgentFramework = @{
-        Description = "AgentFramework workflow skills for planning, execution, debugging, review, and verification."
-        Skills = @(
-            "using-agent-framework",
-            "agent-framework",
-            "af-create-framework",
-            "af-update-framework",
-            "af-plan-feature",
-            "af-save-plan",
-            "af-execute-plan",
-            "af-debug",
-            "af-review",
-            "af-verify-completion",
-            "dispatch-agents",
-            "handoff"
-        )
-    }
-    UnitySkills = @{
-        Description = "Unity-focused Agent skills for common Unity development workflows."
-        Skills = @(
-            "unity-dotween",
-            "unity-odin"
-        )
-    }
-    UniAppSkills = @{
-        Description = "uni-app Agent skills for App, H5, mini-program, and DCloud workflows."
-        Skills = @(
-            "uniapp-development",
-            "wechat-miniprogram-devtools"
-        )
-    }
+if (-not (Test-Path -LiteralPath $topicsFile)) {
+    throw "Missing topics manifest: $topicsFile"
 }
+
+$topics = Get-Content -Raw -LiteralPath $topicsFile | ConvertFrom-Json
+$topicProperty = $topics.PSObject.Properties[$Topic]
 
 if (-not (Test-Path -LiteralPath $skillsRoot)) {
     throw "Missing skills directory: $skillsRoot"
+}
+
+if ($null -eq $topicProperty) {
+    $available = ($topics.PSObject.Properties.Name | Sort-Object) -join ", "
+    throw "Unknown topic '$Topic'. Available topics: $available"
 }
 
 $outputRootPath = if ([System.IO.Path]::IsPathRooted($OutputRoot)) {
@@ -55,7 +33,7 @@ $outputRootPath = if ([System.IO.Path]::IsPathRooted($OutputRoot)) {
     Join-Path $repoRoot $OutputRoot
 }
 
-$topicConfig = $topics[$Topic]
+$topicConfig = $topicProperty.Value
 $target = Join-Path $outputRootPath $Topic
 $targetSkills = Join-Path $target "skills"
 $targetScripts = Join-Path $target "scripts"
@@ -67,7 +45,7 @@ if (Test-Path -LiteralPath $target) {
 New-Item -ItemType Directory -Force -Path $targetSkills | Out-Null
 New-Item -ItemType Directory -Force -Path $targetScripts | Out-Null
 
-foreach ($skill in $topicConfig.Skills) {
+foreach ($skill in $topicConfig.skills) {
     $source = Join-Path $skillsRoot $skill
     $destination = Join-Path $targetSkills $skill
 
@@ -85,7 +63,7 @@ Copy-Item -LiteralPath (Join-Path $repoRoot ".gitignore") -Destination (Join-Pat
 Copy-Item -LiteralPath (Join-Path $repoRoot "scripts\install.ps1") -Destination (Join-Path $targetScripts "install.ps1")
 Copy-Item -LiteralPath (Join-Path $repoRoot "scripts\validate-skills.ps1") -Destination (Join-Path $targetScripts "validate-skills.ps1")
 
-$skillList = ($topicConfig.Skills | ForEach-Object { "- ``$_``" }) -join [Environment]::NewLine
+$skillList = ($topicConfig.skills | ForEach-Object { "- ``$_``" }) -join [Environment]::NewLine
 
 $readmeTemplate = @'
 # {{TOPIC}}
@@ -121,7 +99,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\validate-skills.ps
 
 $readme = $readmeTemplate.
     Replace("{{TOPIC}}", $Topic).
-    Replace("{{DESCRIPTION}}", $topicConfig.Description).
+    Replace("{{DESCRIPTION}}", $topicConfig.description).
     Replace("{{SKILL_LIST}}", $skillList)
 
 $readme | Set-Content -LiteralPath (Join-Path $target "README.md") -Encoding UTF8

@@ -115,15 +115,19 @@ foreach ($meta in $metaFiles) {
     $errors.Add("Unexpected Unity .meta file: $($meta.FullName)")
 }
 
+$hasAfSkills = $skillNames.Contains("using-agent-framework") -or $skillNames.Contains("agent-framework") -or $skillNames.Contains("af-plan-feature")
+
 foreach ($oldSkill in @("dispatch-agents", "handoff")) {
     if ($skillNames.Contains($oldSkill)) {
         $errors.Add("Deprecated general skill still present: $oldSkill")
     }
 }
 
-foreach ($requiredAfSkill in @("af-dispatch-agents", "af-handoff")) {
-    if (-not $skillNames.Contains($requiredAfSkill)) {
-        $errors.Add("Missing required AF skill: $requiredAfSkill")
+if ((-not $isTopicPackage) -or $hasAfSkills) {
+    foreach ($requiredAfSkill in @("af-dispatch-agents", "af-handoff")) {
+        if (-not $skillNames.Contains($requiredAfSkill)) {
+            $errors.Add("Missing required AF skill: $requiredAfSkill")
+        }
     }
 }
 

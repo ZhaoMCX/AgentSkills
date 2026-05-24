@@ -1,42 +1,31 @@
-# AgentSkills
+# Skills
 
-Personal Agent skill collection maintained as a source monorepo with folder-based topic packages and optional single-skill mirrors.
+Personal Codex skills maintained as a single repository with lightweight, Matt Pocock-style skill folders.
 
 ## Layout
 
 ```text
-skills/<topic>/
-  topic.toml
-  AGENTS.md
-  <skill-name>/
-    SKILL.md
-    agents/
-    references/
-    scripts/
+skills/<category>/<skill-name>/
+  SKILL.md
+  references/
+  scripts/
 ```
 
-Only `SKILL.md` is required for a skill. `topic.toml` is required for every topic folder.
+Only `SKILL.md` is required. Categories organize source files only; installed skills are copied directly into the local Codex skills directory by skill name.
 
-## Topics
+## Skills
 
-- [AgentFramework](skills/agent-framework) - AF workflow skills for planning, execution, debugging, review, verification, AF subagent dispatch, and AF handoff.
-- [UnitySkills](skills/unity) - Unity-focused Agent skills for common Unity development workflows.
-- [UniAppSkills](skills/uniapp) - uni-app Agent skills for App, H5, mini-program, and DCloud workflows.
+### Game
 
-## AgentFramework Skills
+- [Game Structure](skills/game/game-structure) - Place gameplay logic into Module, Data, State, Rule, Ability, UseCase, Result, Surface, and Adapter responsibilities.
 
-- [Using AgentFramework](skills/agent-framework/using-agent-framework) - Route AF work to the right workflow skill.
-- [AgentFramework](skills/agent-framework/agent-framework) - Create, adapt, and review project-specific AgentFramework guides.
-- [AF Create Framework](skills/agent-framework/af-create-framework) - Create or restructure technology-stack AgentFramework profiles and project bindings.
-- [AF Update Framework](skills/agent-framework/af-update-framework) - Update existing AgentFramework documents after project learning or feature work.
-- [AF Plan Feature](skills/agent-framework/af-plan-feature) - Scope features and produce AF Feature Plans before implementation.
-- [AF Save Plan](skills/agent-framework/af-save-plan) - Persist approved AF Feature Plans after Plan Mode ends.
-- [AF Execute Plan](skills/agent-framework/af-execute-plan) - Implement approved AF Feature Plans with TDD slices and ownership constraints.
-- [AF Debug](skills/agent-framework/af-debug) - Reproduce, investigate, and fix defects in AF projects.
-- [AF Review](skills/agent-framework/af-review) - Review changes against AF boundaries, plans, and module ownership.
-- [AF Verify Completion](skills/agent-framework/af-verify-completion) - Verify AF work before claiming it is complete or ready.
-- [AF Dispatch Agents](skills/agent-framework/af-dispatch-agents) - Delegate AF-scoped work to subagents.
-- [AF Handoff](skills/agent-framework/af-handoff) - Prepare AF continuation notes for another session or agent.
+### Unity
+
+- [Unity DOTween](skills/unity/unity-dotween) - Implement, review, and debug Unity DOTween animation safely.
+- [Unity FishNet](skills/unity/unity-fishnet) - Implement, review, and debug FishNet networking.
+- [Unity Odin](skills/unity/unity-odin) - Work with Odin Inspector and Sirenix Serializer.
+- [Unity Steamworks.NET](skills/unity/unity-steamworks-net) - Integrate and debug Steamworks.NET in Unity.
+- [Unity TapTap SDK](skills/unity/unity-taptap-sdk) - Integrate and debug TapTap SDK in Unity.
 
 ## Install
 
@@ -46,52 +35,24 @@ Install all skills into the local Codex skills directory:
 .\scripts\install.ps1
 ```
 
-Install one topic:
+Install one category:
 
 ```powershell
-.\scripts\install.ps1 -Topic agent-framework
+.\scripts\install.ps1 -Category unity
 ```
 
 Install one skill:
 
 ```powershell
-.\scripts\install.ps1 -Skill af-plan-feature
+.\scripts\install.ps1 -Skill game-structure
 ```
 
-## Topic Repositories
-
-The source of truth is this repository. Topic repositories are generated from `skills/<topic>` folders. Topic membership and repository targets are managed by each topic's `topic.toml`; there is no root `topics.json`.
-
-Generate a topic repository workspace:
+## Validate
 
 ```powershell
-.\scripts\export-topic.ps1 -Topic agent-framework
-.\scripts\export-topic.ps1 -Topic unity
-.\scripts\export-topic.ps1 -Topic uniapp
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\validate-skills.ps1
 ```
-
-Legacy aliases such as `AgentFramework`, `UnitySkills`, and `UniAppSkills` remain accepted by scripts.
-
-Clone or update all topic repository workspaces on a machine:
-
-```powershell
-.\scripts\sync-topics.ps1
-```
-
-Publish one topic repository from this source repository:
-
-```powershell
-.\scripts\publish-topic.ps1 -Topic unity
-```
-
-Publish every topic repository:
-
-```powershell
-.\scripts\publish-all-topics.ps1
-```
-
-Generated and synced topic workspaces live under `dist/topics/`. The directory is intentionally ignored because it is a local publish workspace, not source content.
 
 ## Notes
 
-Unity `.meta` files are intentionally excluded. These repositories package Codex skills, not Unity assets.
+Unity `.meta` files are intentionally excluded. This repository packages Codex skills, not Unity assets.

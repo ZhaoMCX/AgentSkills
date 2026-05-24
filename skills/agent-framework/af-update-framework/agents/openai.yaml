@@ -1,4 +1,0 @@
-interface:
-  display_name: "AF Update Framework"
-  short_description: "Update project AgentFramework guides."
-  default_prompt: "Update an existing AgentFramework."

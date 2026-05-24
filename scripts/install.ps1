@@ -1,5 +1,5 @@
 param(
-    [string]$Topic,
+    [string]$Category,
     [string]$Skill,
     [string]$Destination = "$env:USERPROFILE\.codex\skills"
 )
@@ -9,53 +9,29 @@ $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $skillsRoot = Join-Path $repoRoot "skills"
 
-function Read-TopicToml([string]$Path) {
-    $result = @{}
-    foreach ($line in Get-Content -Encoding UTF8 -LiteralPath $Path) {
-        $trimmed = $line.Trim()
-        if (-not $trimmed -or $trimmed.StartsWith("#")) { continue }
-        if ($trimmed -match '^([A-Za-z0-9_-]+)\s*=\s*"(.*)"\s*$') {
-            $result[$matches[1]] = $matches[2]
-        } elseif ($trimmed -match '^([A-Za-z0-9_-]+)\s*=\s*\[(.*)\]\s*$') {
-            $items = @()
-            $rawItems = $matches[2].Split(",")
-            foreach ($item in $rawItems) {
-                $value = $item.Trim().Trim('"')
-                if ($value) { $items += $value }
-            }
-            $result[$matches[1]] = $items
-        }
-    }
-    [pscustomobject]$result
-}
-
 if (-not (Test-Path -LiteralPath $skillsRoot)) {
     throw "Missing skills directory: $skillsRoot"
 }
 
-function Get-TopicDirectories {
-    Get-ChildItem -LiteralPath $skillsRoot -Directory | Where-Object {
-        Test-Path -LiteralPath (Join-Path $_.FullName "topic.toml")
-    }
+function Get-CategoryDirectories {
+    Get-ChildItem -LiteralPath $skillsRoot -Directory
 }
 
-function Resolve-TopicDirectory([string]$Name) {
-    $topics = @(Get-TopicDirectories)
-    foreach ($topic in $topics) {
-        $config = Read-TopicToml (Join-Path $topic.FullName "topic.toml")
-        $aliases = @($config.aliases)
-        if ($topic.Name -eq $Name -or $config.slug -eq $Name -or $config.name -eq $Name -or $aliases -contains $Name) {
-            return $topic
+function Resolve-CategoryDirectory([string]$Name) {
+    $categories = @(Get-CategoryDirectories)
+    foreach ($categoryDir in $categories) {
+        if ($categoryDir.Name -eq $Name) {
+            return $categoryDir
         }
     }
 
-    $available = ($topics | ForEach-Object { $_.Name } | Sort-Object) -join ", "
-    throw "Unknown topic '$Name'. Available topics: $available"
+    $available = ($categories | ForEach-Object { $_.Name } | Sort-Object) -join ", "
+    throw "Unknown category '$Name'. Available categories: $available"
 }
 
-function Get-SkillDirectories([System.IO.DirectoryInfo[]]$TopicDirs) {
-    foreach ($topicDir in $TopicDirs) {
-        Get-ChildItem -LiteralPath $topicDir.FullName -Directory | Where-Object {
+function Get-SkillDirectories([System.IO.DirectoryInfo[]]$CategoryDirs) {
+    foreach ($categoryDir in $CategoryDirs) {
+        Get-ChildItem -LiteralPath $categoryDir.FullName -Directory | Where-Object {
             Test-Path -LiteralPath (Join-Path $_.FullName "SKILL.md")
         }
     }
@@ -63,8 +39,8 @@ function Get-SkillDirectories([System.IO.DirectoryInfo[]]$TopicDirs) {
 
 New-Item -ItemType Directory -Force -Path $Destination | Out-Null
 
-$topicDirs = if ($Topic) { @(Resolve-TopicDirectory $Topic) } else { @(Get-TopicDirectories) }
-$skills = @(Get-SkillDirectories $topicDirs)
+$categoryDirs = if ($Category) { @(Resolve-CategoryDirectory $Category) } else { @(Get-CategoryDirectories) }
+$skills = @(Get-SkillDirectories $categoryDirs)
 
 if ($Skill) {
     $skills = @($skills | Where-Object { $_.Name -eq $Skill })
@@ -72,7 +48,7 @@ if ($Skill) {
         throw "Unknown skill '$Skill'."
     }
     if ($skills.Count -gt 1) {
-        throw "Skill '$Skill' exists in multiple topics. Pass -Topic to disambiguate."
+        throw "Skill '$Skill' exists in multiple categories. Pass -Category to disambiguate."
     }
 }
 

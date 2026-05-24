@@ -2,10 +2,8 @@
 
 ## Unreleased
 
-### Added
+### Changed
 
-- Initial monorepo layout for AgentFramework, uni-app, WeChat MiniProgram DevTools, Unity MCP, DOTween, and Odin skills.
-- Added split AgentFramework workflow skills routed by Using AgentFramework, plus dispatch and handoff support skills.
-- Added platform-neutral topic export for AgentFramework, UnitySkills, and UniAppSkills repositories.
-- Added topic manifest and publish scripts for managing topic repositories from AgentSkills.
-- Added topic sync script so fresh AgentSkills clones can pull managed topic repositories locally.
+- Rebuilt the repository as a single `Skills` collection with two-level `skills/<category>/<skill>` organization.
+- Removed legacy workflow packages, generated repository publishing scripts, app-specific skills outside the game/Unity focus, and optional Codex UI metadata files.
+- Kept the game and Unity skill set: `game-structure`, DOTween, FishNet, Odin, Steamworks.NET, and TapTap SDK.

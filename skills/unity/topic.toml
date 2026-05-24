@@ -1,5 +1,0 @@
-name = "UnitySkills"
-slug = "unity"
-repository = "ZhaoMCX/UnitySkills"
-description = "Unity-focused Agent skills for common Unity development workflows."
-aliases = ["UnitySkills"]

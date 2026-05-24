@@ -19,5 +19,4 @@ From the source monorepo, install with:
 ## Contents
 
 - `SKILL.md` - skill trigger, workflow, rules, and examples.
-- `agents/` - agent configuration when present.
 - `references/` - supporting reference material when present.

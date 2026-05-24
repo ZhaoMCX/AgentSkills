@@ -1,7 +1,7 @@
 # Global Agent Rules
 
 - Use local skills/files first. Do not start, request, suggest, or ask about Superpowers/supperpowers URL services unless the user explicitly requests them, or the task cannot be completed without them and you explain why.
-- Treat `using-agent-framework` as the local AgentFramework entrypoint for AF workflow routing; do not invoke `using-superpowers` by default.
+- Use `game-structure` for gameplay responsibility placement. Use focused skills for planning, triage, TDD, diagnosis, architecture review, and subagent work.
 - In Plan mode, write plans primarily in Chinese unless the user asks otherwise.
 - Do not create git branches or git worktrees unless the user explicitly asks for them.
 

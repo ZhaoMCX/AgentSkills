@@ -1,6 +1,6 @@
 ---
 name: unity-dotween
-description: DOTween workflow for this Unity project. Use when implementing, reviewing, debugging, or refactoring tween animations with DG.Tweening, including Transform, UI, CanvasGroup, Image, SpriteRenderer, Material, AudioSource, Rigidbody/Rigidbody2D, Sequences, lifecycle cleanup, async/coroutine waits, DOTween settings, modules, performance capacity, and safe interaction with UnityAgentFramework plugins or Unity UI effects.
+description: DOTween workflow for this Unity project. Use when implementing, reviewing, debugging, or refactoring tween animations with DG.Tweening, including Transform, UI, CanvasGroup, Image, SpriteRenderer, Material, AudioSource, Rigidbody/Rigidbody2D, Sequences, lifecycle cleanup, async/coroutine waits, DOTween settings, modules, performance capacity, and safe interaction with gameplay modules or Unity UI effects.
 ---
 
 # DOTween
@@ -34,7 +34,7 @@ Before adding or changing DOTween behavior:
    - Component-local one-shot: store a `Tween` field and kill it in `OnDisable` or `OnDestroy`.
    - UI panel transitions: store a `Sequence`, set initial state explicitly, and prevent duplicate open/close sequences.
    - Reusable gameplay feedback: expose a method such as `PlayHitFeedback()` that restarts a private tween/sequence.
-   - Cross-plugin animation trigger: keep state mutation in the owning UnityAgentFramework plugin core/data; use DOTween only as presentation-side effect.
+   - Cross-module animation trigger: keep state mutation in the owning gameplay module; use DOTween only as a presentation-side effect.
 4. Add fluent settings in a stable order: `SetEase`, `SetDelay`, `SetLoops`, `SetUpdate`, `SetLink`, callbacks.
 5. Validate in Play Mode or with targeted tests when behavior depends on Unity update timing, destruction, disable/enable, layout rebuilds, physics, or pause state.
 

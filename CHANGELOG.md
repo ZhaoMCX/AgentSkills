@@ -11,6 +11,7 @@
 
 ### 新增
 
+- Added `server-operation-guardrails`，用于 SSH、生产/测试服务器、Nginx/TLS、数据库、防火墙、部署等远程操作的安全护栏。
 - Added `ruoyi-framework`，用于经典若依单体项目，覆盖 Spring Boot、Shiro、Thymeleaf、MyBatis XML、Druid、Quartz 和 Velocity 代码生成。
 - Added `ruoyi-vue`，用于若依前后端分离 Vue2 项目族，覆盖 Spring Security/JWT 后端和 Vue2/Element UI 前端。
 - Added `ruoyi-vue3`，用于若依 Vue3 独立前端项目，覆盖 Vite、Element Plus、Pinia、动态路由和权限指令。

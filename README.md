@@ -19,6 +19,10 @@ Only `SKILL.md` is required. Categories organize source files only; installed sk
 
 - [Game Structure](skills/game/game-structure) - Place gameplay logic into Module, Data, State, Rule, Ability, UseCase, Result, Surface, and Adapter responsibilities.
 
+### Ops
+
+- [Server Operation Guardrails](skills/ops/server-operation-guardrails) - Apply safety rules for SSH, production/staging servers, Nginx/TLS, databases, firewalls, deployments, and other remote operations.
+
 ### RuoYi
 
 - [RuoYi Framework](skills/ruoyi/ruoyi-framework) - 处理经典若依单体项目，覆盖 Spring Boot、Shiro、Thymeleaf、MyBatis XML、Druid、Quartz 和内置代码生成器。

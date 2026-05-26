@@ -19,7 +19,7 @@ skills/<category>/<skill-name>/
 
 ### Dev
 
-- [Git Commit](skills/dev/git-commit) - 指导原子化 Git 提交、暂存检查、提交信息规范、可选确认和可选小步提交工作流。
+- [Git Commit](skills/dev/git-commit) - 指导原子化 Git 提交、暂存检查、提交信息规范、可选确认和小步提交模式。
 
 ### Game
 
@@ -27,7 +27,7 @@ skills/<category>/<skill-name>/
 
 ### Ops
 
-- [Server Operation Guardrails](skills/ops/server-operation-guardrails) - 为 SSH、生产/预发服务器、Nginx/TLS、数据库、防火墙、部署和其它远程操作应用安全规则。
+- [Server Operation Guardrails](skills/ops/server-operation-guardrails) - 为远程服务器读检查、确认变更、备份、密钥、TLS、回滚和验证应用安全规则。
 
 ### RuoYi
 
@@ -39,11 +39,11 @@ skills/<category>/<skill-name>/
 
 ### Unity
 
-- [Unity DOTween](skills/unity/unity-dotween) - 安全地实现、审查和调试 Unity DOTween 动画。
-- [Unity FishNet](skills/unity/unity-fishnet) - 实现、审查和调试 FishNet 网络功能。
-- [Unity Odin](skills/unity/unity-odin) - 使用 Odin Inspector 和 Sirenix Serializer。
-- [Unity Steamworks.NET](skills/unity/unity-steamworks-net) - 在 Unity 中集成和调试 Steamworks.NET。
-- [Unity TapTap SDK](skills/unity/unity-taptap-sdk) - 在 Unity 中集成和调试 TapTap SDK。
+- [Unity DOTween](skills/unity/unity-dotween) - 安全地实现、审查和调试生命周期清晰的 Unity DOTween 动画。
+- [Unity FishNet](skills/unity/unity-fishnet) - 基于本地包和源码检查实现、审查和调试 FishNet 网络功能。
+- [Unity Odin](skills/unity/unity-odin) - 使用 Odin Inspector 和 Sirenix Serializer，并保持运行时/编辑器边界。
+- [Unity Steamworks.NET](skills/unity/unity-steamworks-net) - 在 Unity 中集成和调试 Steamworks.NET 生命周期、回调、原生库和服务边界。
+- [Unity TapTap SDK](skills/unity/unity-taptap-sdk) - 在 Unity 中集成和调试 TapTap SDK 模块、平台配置、PC 校验、合规、IAP 和迁移。
 
 ### UniApp
 
@@ -51,7 +51,7 @@ skills/<category>/<skill-name>/
 
 ### WeChat
 
-- [WeChat Mini Program DevTools](skills/wechat/wechat-miniprogram-devtools) - 使用官方微信开发者工具 CLI 和 miniprogram-automator 工作流。
+- [WeChat Mini Program DevTools](skills/wechat/wechat-miniprogram-devtools) - 使用官方微信开发者工具 CLI、项目本地 automator API、生成的 mp-weixin 输出和预览/上传安全流程。
 
 ## 同步
 
@@ -112,6 +112,8 @@ skills/<category>/<skill-name>/
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\validate-skills.ps1
 ```
+
+校验会强制检查技能名、frontmatter、包含 `Use when` 的两句式 description、`SKILL.md` 行数、引用文件、README 链接和生成文件排除。
 
 ## 备注
 

@@ -19,7 +19,7 @@ Only `SKILL.md` is required. Categories organize source files only; installed sk
 
 ### Dev
 
-- [Git Commit](skills/dev/git-commit) - Guide atomic Git commits, staging checks, commit message conventions, and pre-commit confirmation.
+- [Git Commit](skills/dev/git-commit) - Guide atomic Git commits, staging checks, commit message conventions, optional confirmation, and small-step commit mode.
 
 ### Game
 
@@ -27,7 +27,7 @@ Only `SKILL.md` is required. Categories organize source files only; installed sk
 
 ### Ops
 
-- [Server Operation Guardrails](skills/ops/server-operation-guardrails) - Apply safety rules for SSH, production/staging servers, Nginx/TLS, databases, firewalls, deployments, and other remote operations.
+- [Server Operation Guardrails](skills/ops/server-operation-guardrails) - Apply remote-server safety rules for read-only inspection, confirmed changes, backups, secrets, TLS, rollback, and verification.
 
 ### RuoYi
 
@@ -39,11 +39,11 @@ Only `SKILL.md` is required. Categories organize source files only; installed sk
 
 ### Unity
 
-- [Unity DOTween](skills/unity/unity-dotween) - Implement, review, and debug Unity DOTween animation safely.
-- [Unity FishNet](skills/unity/unity-fishnet) - Implement, review, and debug FishNet networking.
-- [Unity Odin](skills/unity/unity-odin) - Work with Odin Inspector and Sirenix Serializer.
-- [Unity Steamworks.NET](skills/unity/unity-steamworks-net) - Integrate and debug Steamworks.NET in Unity.
-- [Unity TapTap SDK](skills/unity/unity-taptap-sdk) - Integrate and debug TapTap SDK in Unity.
+- [Unity DOTween](skills/unity/unity-dotween) - Implement, review, and debug lifecycle-safe Unity DOTween animation.
+- [Unity FishNet](skills/unity/unity-fishnet) - Implement, review, and debug FishNet networking with local package/source checks.
+- [Unity Odin](skills/unity/unity-odin) - Work with Odin Inspector and Sirenix Serializer while preserving runtime/editor boundaries.
+- [Unity Steamworks.NET](skills/unity/unity-steamworks-net) - Integrate and debug Steamworks.NET lifecycle, callbacks, native binaries, and service boundaries.
+- [Unity TapTap SDK](skills/unity/unity-taptap-sdk) - Integrate and debug TapTap SDK modules, platform setup, PC validation, compliance, IAP, and migrations.
 
 ### UniApp
 
@@ -51,7 +51,7 @@ Only `SKILL.md` is required. Categories organize source files only; installed sk
 
 ### WeChat
 
-- [WeChat Mini Program DevTools](skills/wechat/wechat-miniprogram-devtools) - Use official WeChat DevTools CLI and miniprogram-automator workflows.
+- [WeChat Mini Program DevTools](skills/wechat/wechat-miniprogram-devtools) - Use official WeChat DevTools CLI, project-local automator APIs, generated mp-weixin output, and preview/upload safety workflows.
 
 ## Sync
 
@@ -112,6 +112,8 @@ Install one skill:
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\validate-skills.ps1
 ```
+
+Validation enforces skill names, frontmatter, two-sentence descriptions with `Use when`, `SKILL.md` length, referenced files, README links, and generated-file exclusions.
 
 ## Notes
 

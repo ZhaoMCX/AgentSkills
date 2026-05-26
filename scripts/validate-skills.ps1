@@ -4,6 +4,67 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 $skillsRoot = Join-Path $repoRoot "skills"
 $errors = New-Object System.Collections.Generic.List[string]
 $skillNames = New-Object System.Collections.Generic.HashSet[string]
+$skillRelativeLinks = New-Object System.Collections.Generic.List[string]
+
+function Add-Error([string]$Message) {
+    $errors.Add($Message)
+}
+
+function Get-RelativePath([string]$Path) {
+    return [System.IO.Path]::GetRelativePath($repoRoot, $Path).Replace("\", "/")
+}
+
+function Test-Slug([string]$Value) {
+    return $Value -match "^[a-z0-9]+(-[a-z0-9]+)*$"
+}
+
+function Get-Frontmatter([string]$Content, [string]$SkillLabel) {
+    $frontmatterMatch = [regex]::Match($Content, "(?s)^---\r?\n(.*?)\r?\n---\r?\n")
+    if (-not $frontmatterMatch.Success) {
+        Add-Error "Missing opening frontmatter block: $SkillLabel"
+        return $null
+    }
+
+    $matches = [regex]::Matches($Content, "(?m)^---\s*$")
+    if ($matches.Count -lt 2) {
+        Add-Error "Incomplete frontmatter block: $SkillLabel"
+    }
+    elseif ($matches[0].Index -ne 0) {
+        Add-Error "Frontmatter must start at first byte: $SkillLabel"
+    }
+
+    return $frontmatterMatch.Groups[1].Value
+}
+
+function Get-FrontmatterValue([string]$Frontmatter, [string]$Key) {
+    $match = [regex]::Match($Frontmatter, "(?m)^$([regex]::Escape($Key)):\s*(.+?)\s*$")
+    if (-not $match.Success) {
+        return $null
+    }
+
+    $value = $match.Groups[1].Value.Trim()
+    if (($value.StartsWith('"') -and $value.EndsWith('"')) -or ($value.StartsWith("'") -and $value.EndsWith("'"))) {
+        $value = $value.Substring(1, $value.Length - 2)
+    }
+    return $value
+}
+
+function Test-ReferencedFiles([string]$Content, [string]$SkillDir, [string]$SkillLabel) {
+    $patterns = @(
+        '\]\((references/[^)#\s]+\.md)(?:#[^)]+)?\)',
+        '`(references/[^`\s]+\.md)`'
+    )
+
+    foreach ($pattern in $patterns) {
+        foreach ($match in [regex]::Matches($Content, $pattern)) {
+            $ref = $match.Groups[1].Value
+            $target = Join-Path $SkillDir $ref
+            if (-not (Test-Path -LiteralPath $target)) {
+                Add-Error "Missing referenced file in ${SkillLabel}: $ref"
+            }
+        }
+    }
+}
 
 if (-not (Test-Path -LiteralPath $skillsRoot)) {
     throw "Missing skills directory: $skillsRoot"
@@ -12,47 +73,115 @@ if (-not (Test-Path -LiteralPath $skillsRoot)) {
 $categoryDirs = @(Get-ChildItem -LiteralPath $skillsRoot -Directory)
 
 if ($categoryDirs.Count -eq 0) {
-    $errors.Add("No skill categories found under skills/.")
+    Add-Error "No skill categories found under skills/."
 }
 
 foreach ($category in $categoryDirs) {
     $categorySkillFile = Join-Path $category.FullName "SKILL.md"
     if (Test-Path -LiteralPath $categorySkillFile) {
-        $errors.Add("Category must not be a skill directory: $($category.Name)")
+        Add-Error "Category must not be a skill directory: $($category.Name)"
     }
 
     $skillDirs = @(Get-ChildItem -LiteralPath $category.FullName -Directory)
     if ($skillDirs.Count -eq 0) {
-        $errors.Add("Category has no skills: $($category.Name)")
+        Add-Error "Category has no skills: $($category.Name)"
     }
 
     foreach ($skill in $skillDirs) {
+        $skillLabel = "$($category.Name)/$($skill.Name)"
         $skillFile = Join-Path $skill.FullName "SKILL.md"
 
         if (-not (Test-Path -LiteralPath $skillFile)) {
-            $errors.Add("Missing SKILL.md: $($category.Name)/$($skill.Name)")
+            Add-Error "Missing SKILL.md: $skillLabel"
             continue
         }
 
+        if (-not (Test-Slug $skill.Name)) {
+            Add-Error "Skill directory is not a slug: $skillLabel"
+        }
+
         if (-not $skillNames.Add($skill.Name)) {
-            $errors.Add("Duplicate skill name: $($skill.Name)")
+            Add-Error "Duplicate skill name: $($skill.Name)"
+        }
+
+        $lines = @(Get-Content -Encoding UTF8 -LiteralPath $skillFile)
+        if ($lines.Count -gt 100) {
+            Add-Error "SKILL.md exceeds 100 lines ($($lines.Count)): ${skillLabel}"
         }
 
         $content = Get-Content -Raw -Encoding UTF8 -LiteralPath $skillFile
-
-        if ($content -notmatch "(?s)^---\s.*?name:\s*$([regex]::Escape($skill.Name))\s") {
-            $errors.Add("SKILL.md name does not match directory: $($category.Name)/$($skill.Name)")
+        $frontmatter = Get-Frontmatter $content $skillLabel
+        if ($null -eq $frontmatter) {
+            continue
         }
 
-        if ($content -notmatch "(?s)^---\s.*?description:\s*.+") {
-            $errors.Add("Missing description in SKILL.md: $($category.Name)/$($skill.Name)")
+        $name = Get-FrontmatterValue $frontmatter "name"
+        $description = Get-FrontmatterValue $frontmatter "description"
+
+        if ([string]::IsNullOrWhiteSpace($name)) {
+            Add-Error "Missing name in SKILL.md: $skillLabel"
+        }
+        elseif ($name -ne $skill.Name) {
+            Add-Error "SKILL.md name does not match directory: $skillLabel"
+        }
+        elseif (-not (Test-Slug $name)) {
+            Add-Error "SKILL.md name is not a slug: $skillLabel"
+        }
+
+        if ([string]::IsNullOrWhiteSpace($description)) {
+            Add-Error "Missing description in SKILL.md: $skillLabel"
+        }
+        else {
+            if ($description.Length -gt 1024) {
+                Add-Error "Description exceeds 1024 chars: $skillLabel"
+            }
+            if ($description -notmatch '(?:\.|\u3002)\s*Use when\s+') {
+                Add-Error "Description must be two sentences with 'Use when': $skillLabel"
+            }
+        }
+
+        Test-ReferencedFiles $content $skill.FullName $skillLabel
+        $skillRelativeLinks.Add("skills/$($category.Name)/$($skill.Name)") | Out-Null
+    }
+}
+
+foreach ($name in @("README.md", "README.zh-CN.md")) {
+    $readmePath = Join-Path $repoRoot $name
+    if (-not (Test-Path -LiteralPath $readmePath)) {
+        Add-Error "Missing $name"
+        continue
+    }
+
+    $readme = Get-Content -Raw -Encoding UTF8 -LiteralPath $readmePath
+    foreach ($link in $skillRelativeLinks) {
+        $escapedLink = [regex]::Escape($link)
+        $linkPattern = '\]\(' + $escapedLink + '\)'
+        if ($readme -notmatch $linkPattern) {
+            Add-Error "$name is missing link to $link"
+        }
+    }
+
+    foreach ($match in [regex]::Matches($readme, '\]\((skills/[^)#\s]+)\)')) {
+        $target = Join-Path $repoRoot $match.Groups[1].Value
+        if (-not (Test-Path -LiteralPath $target)) {
+            Add-Error "$name links to missing skill path: $($match.Groups[1].Value)"
         }
     }
 }
 
-$metaFiles = Get-ChildItem -LiteralPath $skillsRoot -Recurse -Force -Filter *.meta
-foreach ($meta in $metaFiles) {
-    $errors.Add("Unexpected Unity .meta file: $($meta.FullName)")
+$forbiddenPatterns = @("*.meta", ".DS_Store", "Thumbs.db", "*.log", ".env")
+foreach ($pattern in $forbiddenPatterns) {
+    $files = @(Get-ChildItem -LiteralPath $skillsRoot -Recurse -Force -File -Filter $pattern)
+    foreach ($file in $files) {
+        Add-Error "Unexpected generated/environment file: $(Get-RelativePath $file.FullName)"
+    }
+}
+
+foreach ($dirName in @("node_modules", "__pycache__")) {
+    $dirs = @(Get-ChildItem -LiteralPath $skillsRoot -Recurse -Force -Directory -Filter $dirName)
+    foreach ($dir in $dirs) {
+        Add-Error "Unexpected generated directory: $(Get-RelativePath $dir.FullName)"
+    }
 }
 
 if ($errors.Count -gt 0) {

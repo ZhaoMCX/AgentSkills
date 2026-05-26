@@ -1,6 +1,6 @@
 ---
 name: wechat-miniprogram-devtools
-description: Use when working with WeChat Mini Program projects through official WeChat DevTools, DevTools CLI, miniprogram-automator, uni-app mp-weixin output, preview/upload, simulator automation, screenshots, page inspection, clicks, input, or end-to-end checks.
+description: Guides WeChat Mini Program DevTools workflows with CLI project operations, simulator automation, generated mp-weixin output handling, preview/upload safety, and evidence capture. Use when working with WeChat Mini Program projects through official WeChat DevTools, DevTools CLI, miniprogram-automator, uni-app mp-weixin output, preview/upload, simulator automation, screenshots, page inspection, clicks, input, or end-to-end checks.
 ---
 
 # WeChat Mini Program DevTools
@@ -9,18 +9,18 @@ description: Use when working with WeChat Mini Program projects through official
 
 Use the official WeChat DevTools CLI for project-level operations and `miniprogram-automator` for simulator interaction. Prefer official DevTools capabilities; do not install or rely on third-party MCP wrappers unless the user explicitly asks.
 
-Load `references/automation-and-release.md` when the task involves stable regression pipelines, preview QR codes, upload/release work, `web-view`, real-device behavior, DevTools cache, screenshot reliability, or detailed logging.
+Read `references/official-sources.md` before relying on exact CLI flags or automator APIs. Use `references/automation-and-release.md` as the index for automation, cache, `web-view`, screenshot, preview, or upload details.
 
 ## Decision Guide
 
 | User asks for | Use |
 | --- | --- |
-| open, preview, upload, build npm, inspect project settings | DevTools CLI |
+| open, preview, upload, build npm, inspect project settings | DevTools CLI; exact flags come from installed help |
 | click, type, navigate pages, read page data, screenshot, assert UI | `miniprogram-automator` after DevTools is open with automation enabled |
 | uni-app / HBuilderX / `mp-weixin` project | build or locate the `dist/dev/mp-weixin` or `dist/build/mp-weixin` output first, then point DevTools at that output |
 | CI-style checks | use CLI for setup and automator for deterministic assertions; report login, appid, or GUI blockers |
 | visual evidence or screenshots | keep functional assertions in automator; use OS/window capture if DevTools protocol screenshots hang |
-| stale simulator output after config/env changes | clear only `compile` cache, then reopen the generated mini program output |
+| stale simulator output after config/env changes | use the smallest supported cache cleanup, then reopen the generated output |
 | real-device preview QR | build, run the required simulator regression for the changed flows, then create and validate an image QR |
 
 ## Standard Workflow

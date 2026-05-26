@@ -19,7 +19,7 @@ Do not assume one layout from the other. Check files first.
 
 ## Creation Commands
 
-Official CLI creation differs by stack:
+Official CLI creation differs by stack. Treat these as examples and re-check the current official CLI quickstart before giving setup advice:
 
 - Vue 3 / Vite JavaScript: `npx degit dcloudio/uni-preset-vue#vite my-vue3-project`
 - Vue 3 / Vite TypeScript: `npx degit dcloudio/uni-preset-vue#vite-ts my-vue3-project`
@@ -29,14 +29,14 @@ Vue 3 / Vite projects require a modern Node version per the current official CLI
 
 ## Scripts And Targets
 
-Official script shape:
+Common official script shape:
 
 ```bash
 npm run dev:%PLATFORM%
 npm run build:%PLATFORM%
 ```
 
-Common platform ids include:
+Common platform ids include the examples below. This is not a complete authority; use the project's real `scripts` object and current official target list before running commands:
 
 - `h5`
 - `app-plus`
@@ -61,7 +61,7 @@ DCloud documents `@dcloudio/uvm` for managing compiler dependency versions. It u
 
 For Vue 3 / Vite projects:
 
-- `vite.config.js` is supported in CLI projects and HBuilderX 3.2.0+.
+- `vite.config.js` support depends on the current CLI/HBuilderX version; verify the official `vite.config.js` page before changing build config.
 - It must include `@dcloudio/vite-plugin-uni` in `plugins`.
 - Some Vite options are unsupported or overridden by uni-app compilation, including `root`, `mode`, `publicDir`, and several `build.*` fields. Check the official `vite.config.js` page before changing build config.
 

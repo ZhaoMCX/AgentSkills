@@ -1,5 +1,7 @@
 # Skills
 
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 Personal Codex skills maintained as a single repository with lightweight, Matt Pocock-style skill folders.
 
 ## Layout
@@ -29,11 +31,11 @@ Only `SKILL.md` is required. Categories organize source files only; installed sk
 
 ### RuoYi
 
-- [RuoYi Framework](skills/ruoyi/ruoyi-framework) - 处理经典若依单体项目，覆盖 Spring Boot、Shiro、Thymeleaf、MyBatis XML、Druid、Quartz 和内置代码生成器。
-- [RuoYi Vue](skills/ruoyi/ruoyi-vue) - 处理若依前后端分离 Vue2 项目族，覆盖 Spring Security/JWT 后端和 Vue2/Element UI 前端。
-- [RuoYi Vue3](skills/ruoyi/ruoyi-vue3) - 处理若依 Vue3 独立前端项目，覆盖 Vite、Element Plus、Pinia、动态路由和权限指令。
-- [RuoYi Cloud](skills/ruoyi/ruoyi-cloud) - 处理若依微服务项目族，覆盖 Gateway、Auth、Nacos、Feign、Redis、Sentinel、Seata 和多模块服务。
-- [RuoYi App](skills/ruoyi/ruoyi-app) - 处理若依移动端 App 模板，覆盖 uni-app Vue2、token 登录、请求封装、导航拦截和后端对接。
+- [RuoYi Framework](skills/ruoyi/ruoyi-framework) - Work on classic RuoYi monolith projects with Spring Boot, Shiro, Thymeleaf, MyBatis XML, Druid, Quartz, and the built-in code generator.
+- [RuoYi Vue](skills/ruoyi/ruoyi-vue) - Work on RuoYi Vue2 front/back separated projects with Spring Security/JWT backends and Vue2/Element UI frontends.
+- [RuoYi Vue3](skills/ruoyi/ruoyi-vue3) - Work on standalone RuoYi Vue3 frontends with Vite, Element Plus, Pinia, dynamic routes, and permission directives.
+- [RuoYi Cloud](skills/ruoyi/ruoyi-cloud) - Work on RuoYi microservice projects with Gateway, Auth, Nacos, Feign, Redis, Sentinel, Seata, and multi-module services.
+- [RuoYi App](skills/ruoyi/ruoyi-app) - Work on RuoYi mobile app templates with uni-app Vue2, token login, request wrappers, navigation guards, and backend integration.
 
 ### Unity
 

@@ -1,11 +1,11 @@
 ---
 name: git-commit
-description: Guides agents to create clean, atomic Git commits with consistent commit messages and pre-commit confirmation. Use when the user asks to commit changes, prepare a Git commit, write a commit message, split commits, or follow Git commit conventions.
+description: Guides agents to create clean, atomic Git commits with consistent commit messages, reporting, optional confirmation, and optional small-step workflows. Use when the user asks to commit changes, prepare a Git commit, write a commit message, split commits, use incremental or small-step commits, or follow Git commit conventions.
 ---
 
 # Git Commit
 
-Use this skill when preparing local Git commits. It covers commit scope, atomicity, staging, commit messages, and confirmation. It does not cover push, pull requests, releases, or platform-specific workflows.
+Use this skill when preparing local Git commits. It covers commit scope, atomicity, optional small-step commit workflows, staging, commit messages, optional confirmation, and completion reports. It does not cover push, pull requests, releases, or platform-specific workflows.
 
 ## First Move
 
@@ -19,6 +19,21 @@ git diff --cached
 
 Identify which changes belong to the user's current request. Treat existing unrelated changes as user-owned: do not revert, restage, or include them unless the user explicitly asks.
 
+## Small-Step Commit Mode
+
+Small-step commits are an optional development mode, not the default. Use this mode only when the user explicitly asks for small-step commits, incremental commits, frequent commits, progress commits, or automatic commits after each committable unit.
+
+In small-step commit mode, after finishing each committable unit, check whether it should become a commit now. A small-step commit is a complete, atomic unit that is independently understandable, revertible, and verifiable when practical.
+
+Use small-step commits to make commit history useful as development progress, development documentation, and a user-visible control surface for pacing the work when the user wants that workflow.
+
+- Do not enable small-step commit mode unless the user explicitly asks for it.
+- Do not commit unfinished work just to record activity.
+- Do not use small-step commits to bypass staging review, diff review, secret checks, generated-file checks, or the atomic commit rule.
+- When small-step commit mode is enabled, commit each finished unit after reviewing the staged diff, then report the commit hash, commit message, and whether uncommitted changes remain.
+- If the user explicitly authorizes automatic small-step commits, commit each finished unit without asking again, then immediately report the commit hash, commit message, and whether uncommitted changes remain.
+- If the user's requested pace conflicts with atomicity or repository safety, prefer atomicity and safety, then explain the tradeoff.
+
 ## Atomic Commit Rule
 
 One commit should express one intent:
@@ -30,7 +45,7 @@ One commit should express one intent:
 - If changes must exist together to compile or pass tests, keep them in the same commit.
 - If changes can be explained or reverted separately, split them into separate commits.
 
-When staged content contains multiple intents, pause and propose a split plan. Do not combine multiple intents into one commit without user confirmation.
+When commit-ready content contains multiple intents, split it into separate commits by default. Pause only when the correct split is ambiguous, the requested scope is unclear, or committing would risk including unrelated user-owned changes.
 
 ## Staging Rules
 
@@ -77,9 +92,18 @@ Summary rules:
 - Keep it one line, concise, and without a trailing period.
 - Avoid vague summaries such as `update`, `misc`, `changes`, or `优化代码`.
 
-## Confirmation Before Commit
+## Commit Execution and Optional Confirmation
 
-Before running `git commit`, show the user:
+When the user asks to commit, stage only the relevant files, split commit-ready changes into atomic units, create the commit or commits, and report the result. Do not stop for confirmation by default.
+
+Ask for confirmation before committing only when:
+
+- The user asks to review or confirm before committing.
+- The commit scope is ambiguous.
+- The staged or unstaged changes mix current-task changes with unrelated user-owned work and cannot be separated safely.
+- The commit would include generated, temporary, credential, environment, or unusually large files whose intent is unclear.
+
+When asking for confirmation, show:
 
 ```text
 Files to commit:
@@ -89,7 +113,7 @@ Commit message:
 <type>: <summary>
 ```
 
-Commit only after explicit user confirmation. If the user already supplied an exact commit message and asked to commit, still confirm the staged file list unless the instruction clearly authorizes immediate commit.
+If the user already supplied an exact commit message and asked to commit, use that message for the relevant commit unless it conflicts with atomicity or the staged content.
 
 ## Completion Report
 

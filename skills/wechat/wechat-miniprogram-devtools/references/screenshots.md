@@ -9,7 +9,7 @@ Do not treat screenshot timeout alone as proof that the page failed to render. I
 1. Keep functional checks in `miniprogram-automator`: route, required selector, element size, text, form input, API result, `web-view src`.
 2. Wrap screenshot calls with a timeout and report them separately from functional failures.
 3. For visual QA, use OS/window capture. On Windows, `PrintWindow` can capture the WeChat DevTools main window and avoid `App.captureScreenshot`; crop the simulator area for review. `CopyFromScreen` is less reliable because foreground windows can cover DevTools.
-4. If the DevTools window is offscreen or blank, move/restore it before OS capture and wait for repaint.
+4. Keep DevTools visible and foreground before capture. If the DevTools window is offscreen, minimized, blank, or covered in a way that prevents verification, restore or foreground it first; move/resize only as a last resort.
 
 If the repo already provides a helper such as `scripts/capture-wechat-simulator.ps1` or `scripts/wechat-visual-os.mjs`, prefer that over rewriting capture code.
 

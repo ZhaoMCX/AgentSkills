@@ -44,7 +44,7 @@ Read `references/official-sources.md` before relying on exact CLI flags or autom
 - Treat upload as a user-visible release action. Confirm appid, version, description, and target project before uploading.
 - If DevTools reports login, appid, network, or permission errors, state the blocker plainly and avoid inventing workarounds.
 - For build/npm operations inside the mini program output, use DevTools CLI when the project requires WeChat's npm build behavior.
-- On Windows, do not assume a background or minimized DevTools window is reliable. Before simulator automation or OS screenshots, restore the DevTools main window to the desktop, move/size it predictably, bring it to the foreground, and allow a short repaint settle time.
+- On Windows, DevTools automation and screenshots can hang when DevTools is backgrounded or minimized. Keep the DevTools main window visible and foreground before simulator automation or OS screenshots; do not move or resize it unless it is offscreen, minimized, or otherwise impossible to verify.
 - Clean stale DevTools sessions with the official `quit` command first, then kill remaining processes from the DevTools install directory only if needed. A leftover old main window can make automator connect to the wrong or half-stale session.
 - When starting a stable automation session, open the current generated project window first, then enable `auto` on the intended port. Reusing a warmed session is fine only after proving it belongs to the current project and is visible.
 - Prefer `miniProgram.disconnect()` after checks. Do not call `miniProgram.close()` by default because it can trigger close prompts or hang shutdown.

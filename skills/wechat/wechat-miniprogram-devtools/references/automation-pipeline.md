@@ -4,7 +4,8 @@
 
 - Split slow GUI startup from fast gates. Use a DevTools warm/open step once, then run healthcheck, smoke, map/web-view checks, and visual capture against the already-open project when possible.
 - Do not put DevTools cold start, login prompts, preview upload, or full visual capture inside a tight unit-test timeout. Give GUI steps their own timeout and clear failure category.
-- On Windows, DevTools simulator automation is not reliable when the IDE is only a background/minimized process. Before route assertions, web-view checks, or OS screenshots, restore the main DevTools window, move/size it predictably, bring it to the foreground, and wait briefly for repaint.
+- On Windows, DevTools simulator automation is not reliable when the IDE is backgrounded or minimized. Before route assertions, web-view checks, or OS screenshots, keep the DevTools main window visible and foreground and wait briefly for repaint.
+- Do not casually move or resize the DevTools window. Preserve the user's desktop layout unless the window is offscreen, minimized, covered in a way that prevents verification, or a project helper explicitly manages capture geometry.
 - When starting from an unknown DevTools state, run the official CLI `quit` first, then clean leftover DevTools install-directory processes only as a fallback. A stale visible main window can cause automator to connect to a wrong or half-stale session.
 - Open the generated mini program project window before enabling `auto`; for uni-app this means the compiled `mp-weixin` output. Then connect automator to the intended port.
 - Avoid repeatedly killing or closing DevTools during a regression run. After automator checks, prefer `miniProgram.disconnect()` and leave the warmed DevTools session available for the next check.

@@ -3,6 +3,7 @@
 Do not run these unless the user explicitly confirms the exact intent after seeing the risk:
 
 - `rm -rf`, broad recursive deletion, or deletion from computed paths
+- any deletion-like operation, including `rm`, `rmdir`, `unlink`, `userdel`, package removal/uninstall commands, truncation, cleanup of logs/data/artifacts, or replacing a directory/file in a way that discards existing content
 - `mkfs`, `fdisk`, partitioning, disk formatting, or volume removal
 - `reboot`, `shutdown`, or stopping critical services
 - firewall/security-group changes such as `ufw`, `iptables`, `nft`, cloud ACL edits

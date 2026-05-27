@@ -20,6 +20,7 @@ Use these guardrails before and during any remote server operation. Optimize for
 - Start with read-only inspection unless the user explicitly asks for a specific write operation and the risk is already clear.
 - Explain what context is being gathered and what each command is expected to reveal.
 - Before any write, destructive, privilege-escalated, service-impacting, network/firewall, database, certificate, or deployment operation, present the intended command or change and get explicit user confirmation.
+- Before any deletion-like operation, always ask the user first and get explicit confirmation. This includes deleting files, removing users, uninstalling packages, clearing directories, truncating data, overwriting paths in a way that discards previous content, and any recursive remove command, even when broad server-management permission was granted.
 - Prefer narrow commands over broad automation. Avoid shell one-liners that combine discovery, transformation, and mutation when separate steps are safer.
 - Do not apply remote-server confirmation requirements to ordinary local read-only repo inspection.
 
@@ -45,7 +46,7 @@ For any server change:
 
 ## High-Risk Areas
 
-Never proceed without explicit confirmation for destructive deletes, disk formatting, reboot/shutdown, stopping critical services, firewall/security-group changes, database mutations, broad package upgrades, broad permission changes, SSH lockout risks, disabling security controls, or exposing secrets.
+Never proceed without explicit confirmation for deletion-like operations, destructive deletes, disk formatting, reboot/shutdown, stopping critical services, firewall/security-group changes, database mutations, broad package upgrades, broad permission changes, SSH lockout risks, disabling security controls, or exposing secrets.
 
 Never ask the user to paste private keys, certificate private keys, passwords, API tokens, database URLs, or `.env` secrets into chat when a safer alternative exists.
 
